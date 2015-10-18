@@ -1,6 +1,4 @@
 # obdii-reader
-An OBD-II diagnostics system based on the ATmega32 microcontroller
-
 This is an OBDII diagnostic system for cars. It reads diagnostic information from a car's OBDII port. OBD stands for On-Board Diagnostic. All cars sold since 1996 in the United States are required to have an OBDII diagnostic system. These cars have an OBDII port, which has a 16-pin connector.
 
 In the OBDII standard, there are five different protocols: ISO 9141-2, ISO 14230 KWP2000, SAE J1850 PWM, SAE J1850 VPW, and CAN. Some of the ways in which these protocols differ are the method of initializing communication, the number of bytes supported per packet, the baud rate used, and the OBDII connector pins used. J1850 PWM is used in Ford vehicles, whereas ISO 9141-2 and KWP2000 are mainly used in Chrysler vehicles, as well as European and Asian imports. For example, the 1996 Honda Accord uses the ISO 9141-2 protocol. Vehicles sold since 2008 are required to use the CAN protocol.
