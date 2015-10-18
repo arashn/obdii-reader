@@ -4,57 +4,22 @@ An OBD-II diagnostics system based on the ATmega32 microcontroller
 This is an OBDII diagnostic system for cars. It reads diagnostic information from a car's OBDII port. OBD stands for On-Board Diagnostic. All cars sold since 1996 in the United States are required to have an OBDII diagnostic system. These cars have an OBDII port, which has a 16-pin connector.
 
 In the OBDII standard, there are five different protocols: ISO 9141-2, ISO 14230 KWP2000, SAE J1850 PWM, SAE J1850 VPW, and CAN. Some of the ways in which these protocols differ are the method of initializing communication, the number of bytes supported per packet, the baud rate used, and the OBDII connector pins used. J1850 PWM is used in Ford vehicles, whereas ISO 9141-2 and KWP2000 are mainly used in Chrysler vehicles, as well as European and Asian imports. For example, the 1996 Honda Accord uses the ISO 9141-2 protocol. Vehicles sold since 2008 are required to use the CAN protocol.
- 
- * ISO 9141-2 and ISO 14230 KWP2000 very similar. ISO 9141-2 has a slow
- * initialization method, while KWP2000 has both slow init and fast init
- * methods. ISO 9141-2 and KWP2000's slow init methods are nearly identical,
- * and they differ only in the value of the key bytes sent by the vehicle
- * to the testing device. Both ISO 9141-2 and KWP2000 use pin 7 of the OBDII
- * port, called the K-Line, for communication, and optionally, pin 15, called
- * the L-Line, for sending a wake-up signal. Pin 16 provides 12V, and pins 4
- * and 5 are chassis ground and signal ground, respectively. Idle signal levels
- * are high at 12V, and signals are active pull-down to 0V.
- *
- * For the ISO 9141-2 slow init method, the sequence is as follows:
- * 1. First, wait a minimum of 2600ms after the car is turned on,
- *    in order to prepare the ECU for a new initialization sequence.
- * 2. Send byte 0x33 to the K-Line at 5 baud, using the standard serial
- *    communication routine (1 start bit, 8 character bits, no parity bit,
- *    and 1 stop bit).
- * 3. Initialize UART to 10.4K baud, 8 data bits, no parity, and 1 stop.
- * 4. Receive byte 0x55 from the vehicle.
- * 5. Receive two key bytes, which are either 08 08 or 94 94 for ISO 9141-2.
- *    KWP2000's slow init method differs from ISO 9141-2 only in the value
- *    for these two key bytes.
- * 6. Wait for about 40 milliseonds. Then, Invert key byte 2 and send to the vehicle.
- *    For example, key byte 0x08 becomes 0xF7.
- * 7. Wait another 40 milliseconds. Then receive inverted address byte 0x33, which
- *    will be 0xCC.
- *
- * At this point, initialization is complete. Before sending the first request,
- * wait for about 65 milliseconds. Then, send the request, waiting about 10
- * milliseconds between each byte sent. Each byte that is sent is echoed back to the
- * testing device as a confirmation of receipt of the byte. Therefore, after sending
- * each byte, receive the echo byte before sending the next byte. You will also need
- * to wait about 65ms after receiving the response for the last request before
- * starting another request. Finally, to keep the connection open, you will need to
- * make requests periodically, with a period of no more than 5000 ms between a request
- * and the last response. Otherwise, the vehicle will close the connection with the
- * testing device, and you will need to perform the initialization sequence again.
- *
- * There are 9 modes, or services, available for use in the OBDII specification.
- * However, many vehicles do not implement the higher services, so we will only
- * use service 1 in this system, which returns enough useful information about
- * the current state of the car. Within each service, there are several supported
- * PIDs, or Parameter IDs. To see which PIDs are supported within a service, you
- * can use one or more of the PIDs in that service. For example, to see which of
- * the first 32 PIDs in Service 1 are supported, you can issue a Service 1 PID00
- * request. The result of the Service 1 PID00 request is 4 bytes, called A, B, C,
- * and D, in that order. Collectively, these 4 bytes give a 32-bit number whose
- * binary representation indicates which of the next 32 PIDs are supported by the
- * car. For example, the 7th bit of byte A, going from MSB to LSB, indicates if
- * Service 1 PID 07 is supported or not.
- *
+
+ISO 9141-2 and ISO 14230 KWP2000 very similar. ISO 9141-2 has a slow initialization method, while KWP2000 has both slow init and fast init methods. ISO 9141-2 and KWP2000's slow init methods are nearly identical, and they differ only in the value of the key bytes sent by the vehicle to the testing device. Both ISO 9141-2 and KWP2000 use pin 7 of the OBDII port, called the K-Line, for communication, and optionally, pin 15, called the L-Line, for sending a wake-up signal. Pin 16 provides 12V, and pins 4 and 5 are chassis ground and signal ground, respectively. Idle signal levels are high at 12V, and signals are active pull-down to 0V.
+
+For the ISO 9141-2 slow init method, the sequence is as follows:
+1. First, wait a minimum of 2600ms after the car is turned on, in order to prepare the ECU for a new initialization sequence.
+2. Send byte 0x33 to the K-Line at 5 baud, using the standard serial communication routine (1 start bit, 8 character bits, no parity bit, and 1 stop bit).
+3. Initialize UART to 10.4K baud, 8 data bits, no parity, and 1 stop.
+4. Receive byte 0x55 from the vehicle.
+5. Receive two key bytes, which are either 08 08 or 94 94 for ISO 9141-2. KWP2000's slow init method differs from ISO 9141-2 only in the value for these two key bytes.
+6. Wait for about 40 milliseonds. Then, Invert key byte 2 and send to the vehicle. For example, key byte 0x08 becomes 0xF7.
+7. Wait another 40 milliseconds. Then receive inverted address byte 0x33, which will be 0xCC.
+
+At this point, initialization is complete. Before sending the first request, wait for about 65 milliseconds. Then, send the request, waiting about 10 milliseconds between each byte sent. Each byte that is sent is echoed back to the testing device as a confirmation of receipt of the byte. Therefore, after sending each byte, receive the echo byte before sending the next byte. You will also need to wait about 65ms after receiving the response for the last request before starting another request. Finally, to keep the connection open, you will need to make requests periodically, with a period of no more than 5000 ms between a request and the last response. Otherwise, the vehicle will close the connection with the testing device, and you will need to perform the initialization sequence again.
+
+There are 9 modes, or services, available for use in the OBDII specification. However, many vehicles do not implement the higher services, so we will only use service 1 in this system, which returns enough useful information about the current state of the car. Within each service, there are several supported PIDs, or Parameter IDs. To see which PIDs are supported within a service, you can use one or more of the PIDs in that service. For example, to see which of the first 32 PIDs in Service 1 are supported, you can issue a Service 1 PID00 request. The result of the Service 1 PID00 request is 4 bytes, called A, B, C, and D, in that order. Collectively, these 4 bytes give a 32-bit number whose binary representation indicates which of the next 32 PIDs are supported by the car. For example, the 7th bit of byte A, going from MSB to LSB, indicates if Service 1 PID 07 is supported or not.
+
  * The response for other PIDs can have more or fewer bytes for the result,
  * up to 12 bytes. However, Service 1 PIDs use at most 4 bytes for the result,
  * which are A, B, C, and D.
