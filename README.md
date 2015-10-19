@@ -49,16 +49,11 @@ The most difficult part of this project for me was figuring out the exact protoc
 
 ### Credits
 Some of the sources that helped me build this project:
-ODB II » Tech Toy Hacks: http://blog.perquin.com/blog/category/odbii/
 
-K-line Communication Description - OBD Clearinghouse: http://www.obdclearinghouse.com/index.php?body=get_file&id=1343
-
-OnBoardDiagnostics.com - OBD-II Network Standards: http://www.onboarddiagnostics.com/page03.htm
-
-On-board diagnostics - Wikipedia, the free encyclopedia: http://en.wikipedia.org/wiki/On-board_diagnostics
-
-Creating A Wireless OBDII Scanner: https://www.wpi.edu/Pubs/E-project/Available/E-project-101808-133424/unrestricted/FinalPaper.pdf
-
-Initializing communication to vehicle OBDII System: http://fett.tu-sofia.bg/et/2005/pdf/Paper097-P_Dzhelekarski1.pdf
-
-Freediag - Vehicle Diagnostic Suite: http://freediag.sourceforge.net/
+* ODB II » Tech Toy Hacks: http://blog.perquin.com/blog/category/odbii/
+* K-line Communication Description - OBD Clearinghouse: http://www.obdclearinghouse.com/index.php?body=get_file&id=1343
+* OnBoardDiagnostics.com - OBD-II Network Standards: http://www.onboarddiagnostics.com/page03.htm
+* On-board diagnostics - Wikipedia, the free encyclopedia: http://en.wikipedia.org/wiki/On-board_diagnostics
+* Creating A Wireless OBDII Scanner: https://www.wpi.edu/Pubs/E-project/Available/E-project-101808-133424/unrestricted/FinalPaper.pdf
+* Initializing communication to vehicle OBDII System: http://fett.tu-sofia.bg/et/2005/pdf/Paper097-P_Dzhelekarski1.pdf
+* Freediag - Vehicle Diagnostic Suite: http://freediag.sourceforge.net/
