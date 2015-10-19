@@ -29,7 +29,7 @@ The request data format for ISO 9141-2 is as follows:
 [checksum]
 ```
 
-The first 3 bytes are in the header part, the next `cmdlen` bytes are in the data part, and the last byte is the checksum part. Checksum is the sum of the bytes in the header and data parts. `cmdlen` is the number of bytes needed for the request. All Service 1 requests use 2 bytes for the request, so `cmdlen` will be 2. For ISO 9141-2 the destination byte is 0x6A, and the source byte is 0xF1.
+The first 3 bytes are in the header part, the next `cmdlen` bytes are in the data part, and the last byte is the checksum part. `checksum` is the sum of the bytes in the header and data parts. `cmdlen` is the number of bytes needed for the request. All Service 1 requests use 2 bytes for the request, so `cmdlen` will be 2. For ISO 9141-2 the `destination` byte is 0x6A, and the `source` byte is 0xF1.
 
 For a successful response, the response data format for ISO 9141-2 is as follows:
 
@@ -42,7 +42,7 @@ For a successful response, the response data format for ISO 9141-2 is as follows
 
 `datalen` is the sum of the number of bytes for the request and the number of bytes for the response. For example, for a Service 1 PID00 request, there are 2 request bytes, 01 and 00, and there are 4 response bytes. In this case, `datalen` is 6.
 
-For my system, since I only had access to my own car, which uses the ISO 9141-2 protocol, I decided to support that protocol only. Furthermore, I decided to display the engine RPM, vehicle speed, engine load, and engine coolant temperature, as well as the first 32 supported Service 1 PIDs. Pressing 1 on the keypad switches between showing the RPM and the speed, or the engine load and temperature. Pressing D on the keypad switches between showing the current vehicle information, like RPM and speed, or showing the result of the Service 1 PID00 request, which displays support for the first 32 Service 1 PIDs.
+For my system, since I only had access to a car that uses the ISO 9141-2 protocol, I decided to support that protocol only. Furthermore, I decided to display the engine RPM, vehicle speed, engine load, and engine coolant temperature, as well as the first 32 supported Service 1 PIDs. Pressing 1 on the keypad switches between showing the RPM and the speed, or the engine load and temperature. Pressing D on the keypad switches between showing the current vehicle information, like RPM and speed, or showing the result of the Service 1 PID00 request, which displays support for the first 32 Service 1 PIDs.
 
 Remarks:
 The most difficult part of this project for me was figuring out the exact protocol and procedure for communicating with a car, such as which bytes to send to the car, which bytes to expect from the car, the timing of bytes sent and received, and how to decode the meaning of the bytes sent and received. As the use of the OBDII system has been made easy by the myriad scan tools available, there is scant information about how to build a custom diagnostic reader. There was no well-defined tutorial on how to interface with a car's OBDII system using an AVR microcontroller. As such, I had to piece together information from the web, reading documents regarding OBDII specifications and protocols, and incorporating my own knowledge about networking protocols and definitions, in order to come up with the correct setup for my particular system.
