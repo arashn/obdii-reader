@@ -1,4 +1,4 @@
-# obdii-reader
+# OBD-II Reader
 This is an OBD-II diagnostic system for cars. It reads diagnostic information from a car's OBDII port. It is based on the ATmega32 microcontroller.
 
 For more details about this project, see [this wiki page](https://github.com/arashn/obdii-reader/wiki).
@@ -15,4 +15,5 @@ To set up the system, follow the steps below:
 3. Connect the Atmel ICE Basic programmer to the microcontroller, using this diagram to identify the pins on the microcontroller which correspond to the pins on the connector.
 4. Connect the programmer to your computer. Wait for the drivers to intall.
 
-You can contribute to this project by helping add support for other protocols, and finding bugs.
+### Contributing
+You can contribute to this project by helping add support for other protocols, and finding bugs. You may fork this project and modify it as needed.
