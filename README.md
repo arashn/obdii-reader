@@ -11,7 +11,7 @@ To get started with this project, you will need the parts listed in [this page](
 To set up the system, follow the steps below:
 
 1. Download and install Atmel Studio. You can download Atmel Studio 7 from [here](http://www.atmel.com/tools/ATMELSTUDIO.aspx).
-2. Connect the components to the microcontroller as shown in this schematic.
+2. Connect the components to the microcontroller as shown in this schematic. **Note:** You will need to solder 14 wires to pins 1 through 14 on the LCD.
 3. Connect the Atmel ICE Basic programmer to the microcontroller, using this diagram to identify the pins on the microcontroller which correspond to the pins on the connector.
 4. Connect the programmer to your computer. Wait for the drivers to intall.
 
