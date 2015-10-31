@@ -16,4 +16,4 @@ To set up the system, follow the steps below:
 4. Connect the programmer to your computer. Wait for the drivers to intall.
 
 ### Contributing
-You can contribute to this project by helping add support for other protocols, and finding bugs. Please use the issue tracker to see current issues and file new bugs, or to request new features. You may fork this project and modify it as needed.
+You can contribute to this project by helping add support for other protocols, and finding bugs. Please use the issue tracker to see current issues and file new bugs, or to request new features. You may fork this project and make your own additions and modifications to the system.
