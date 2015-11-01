@@ -27,7 +27,7 @@ To set up the system, follow the steps below:
 
 Your microcontroller is now programmed and ready to be connected to the vehicle's OBD-II port. To connect the system to the car's OBD-II port, follow the steps below:
 
-1. With the vehicle turned off, and the 9V battery disconnected, connect the wires labeled 'GND', 'K-Line', and '12V' in the schematic to pins 5, 7, and 16 of the vehicles's OBD-II port, respectively. This diagram shows the numbering of the pins on the OBD-II port.
+1. With the vehicle turned off, and the 9V battery disconnected, connect the wires labeled 'GND', 'K-Line', and '12V' in the schematic to pins 5, 7, and 16 of the vehicles's OBD-II port, respectively. [This diagram](https://github.com/arashn/obdii-reader/blob/master/diagrams/OBDII_connector.png) shows the numbering of the pins on the OBD-II port.
 2. Once the microcontroller has been connected to the OBD-II port, start the vehicle. Then, connect the 9V battery to the microcontroller.
 3. The LCD display should read 'Initializing...' for a few seconds. Then, the display will show the vehicle's current speed, in KM/h, and engine RPM. Pressing '1' on the keypad will change the display to show engine load and engine temperature. To go back to vehicle speed and engine RPM, press '1' again.
 
