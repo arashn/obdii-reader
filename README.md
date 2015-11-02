@@ -17,13 +17,14 @@ To set up the system, follow the steps below:
 5. Connect the programmer to your computer. Wait for the drivers to install.
 6. Launch Atmel Studio. In the main window, click 'Tools', then 'Device Programming'.
 7. In the window that opens, for 'Tool', select 'Atmel-ICE'; for 'Device', select 'ATmega32'; and for 'Interface', select 'ISP'. Then click 'Apply'.
-8. For 'ISP Clock', a value of 125 kHz is sufficient. Click 'Set'. Then, under 'Device signature', click 'Read'. If everything is set up correctly, the box should read a hexadecimal value. Click 'Close'.
-9. Back in the main window, click 'File', then 'New' -> 'Project...'. For the project type, choose 'GCC C ASF Board Project'. Give your project a name, then click 'OK'.
-10. In the board selection window, choose 'ATmega32' in the top section, and in the section below, choose 'User Board template - megaAVR'. Click 'Ok'.
-11. In the Solution Explorer window to the right, double-click the 'src' folder. Then, delete the default main.c file by right-clicking on the file, choosing 'Remove' in the context menu, and clicking 'Delete'.
-12. Right-click again on the 'src' folder, then click 'Add' -> 'Existing Item...'. Then, in the window that opens, navigate to the directory where you have cloned the repository, go to the 'src' folder, and select all of the files there. Then click 'Add'.
-13. Click 'Debug', then 'Start Without Debugging'. The program will now be flashed onto the ATmega32 microcontroller.
-14. Once the program has been transferred, you should see a message saying 'Initializing...' on the LCD. Disconnect the programmer and the 9V battery from the microcontroller.
+8. For 'ISP Clock', a value of 125 kHz is sufficient. Click 'Set'. Then, under 'Device signature', click 'Read'. If everything is set up correctly, the box should read a hexadecimal value.
+9. Click the 'Fuses' tab on the left. Go down to the fuse named 'SUT_CKSEL', and choose 'EXTHIFXTALRES_16KCK_64MS' from the drop-down menu. Click 'Program'. Once programming has completed, click 'Verify' to verify that the new fuse value has been correctly written. Then click 'Close'.
+10. Back in the main window, click 'File', then 'New' -> 'Project...'. For the project type, choose 'GCC C ASF Board Project'. Give your project a name, then click 'OK'.
+11. In the board selection window, choose 'ATmega32' in the top section, and in the section below, choose 'User Board template - megaAVR'. Click 'Ok'.
+12. In the Solution Explorer window to the right, double-click the 'src' folder. Then, delete the default main.c file by right-clicking on the file, choosing 'Remove' in the context menu, and clicking 'Delete'.
+13. Right-click again on the 'src' folder, then click 'Add' -> 'Existing Item...'. Then, in the window that opens, navigate to the directory where you have cloned the repository, go to the 'src' folder, and select all of the files there. Then click 'Add'.
+14. Click 'Debug', then 'Start Without Debugging'. The program will now be flashed onto the ATmega32 microcontroller.
+15. Once the program has been transferred, you should see a message saying 'Initializing...' on the LCD. Disconnect the programmer and the 9V battery from the microcontroller.
 
 Your microcontroller is now programmed and ready to be connected to the vehicle's OBD-II port. To connect the system to the car's OBD-II port, follow the steps below:
 
