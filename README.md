@@ -1,4 +1,9 @@
 # OBD-II Reader
+
+Thank you for your interest in this project. If you would like to see more features added to this project (e.g. other protocols, other platforms and microcontrollers, other statistics, etc.) please create an issue. Thanks!
+
+---
+
 This is an OBD-II diagnostic system for cars. It reads diagnostic information from a car's OBD-II port. It is based on the ATmega32 microcontroller.
 
 For more details about this project, see [this wiki page](https://github.com/arashn/obdii-reader/wiki).
