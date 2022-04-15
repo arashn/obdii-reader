@@ -36,7 +36,6 @@ void timer_setup(void); // Setup for timer interrupt
 void update_lcd(void);
 unsigned char get_key(void);
 unsigned char key_pressed(unsigned char r, unsigned char c);
-void obd_init(void); // OBDII ISO 9141-2 initialization sequence
 
 void timer_setup(void) {
 	cli();
