@@ -8,58 +8,6 @@ const unsigned char DESTINATION = 0x6A;
 const unsigned char SOURCE = 0xF1;
 const unsigned char DATA_LEN_OFFSET = 0x42;
 
-void obd_init(void)
-{
-	DDRD |= (1 << 1); // Set Pin PD1 as output
-	
-	PORTD |= (1 << 1); // Write 1 to PD1
-	
-	wait_avr(2610); // Wait 2610 ms for ECU to reset fully
-	
-	// Send a byte 33 hex at 5 baud
-	PORTD &= ~(1 << 1);
-	wait_avr(200);
-	PORTD |= (1 << 1);
-	wait_avr(400);
-	PORTD &= ~(1 << 1);
-	wait_avr(400);
-	PORTD |= (1 << 1);
-	wait_avr(400);
-	PORTD &= ~(1 << 1);
-	wait_avr(400);
-	PORTD |= (1 << 1);
-	wait_avr(200);
-	
-	// Initialize serial connection
-	// ~10400 baud --> UBRR = 47
-	// 8-bit character size
-	// No parity bit, 1 stop bit
-	USART_Init(47);
-	
-	// Wait for response: Byte 55 hex
-	unsigned char response = USART_Receive();
-	
-	// Receive two key bytes
-	// 08 08, 94 94 for ISO 9141
-	// 8F E9, 8F 6B, 8F 6D, 8F EF for KWP
-	unsigned char keyByte1 = USART_Receive();
-	unsigned char keyByte2 = USART_Receive();
-	
-	wait_avr(40);
-	
-	// Send ACK: Inverted key byte 2
-	unsigned char ack1 = ~keyByte2;
-	USART_Transmit(ack1);
-	
-	wait_avr(40);
-	
-	// Receive ACK from vehicle: Inverted address 33
-	unsigned char ack2 = USART_Receive();
-	ack2 = USART_Receive();
-	
-	clr_lcd();
-}
-
 static inline
 int send_byte(unsigned char data)
 {
@@ -145,20 +93,8 @@ int send_cmd(const unsigned char cmd[], size_t cmd_len, unsigned char result_buf
 	return 0;
 }
 
-int get_service1_supported_pids(void)
-{
-	// Send Service 1 PID 00 request message (01 00)
-	// 68 6A F1 01 00 C4
-
-	unsigned char cmd[2] = {0x01, 0x00};
-	if (!send_cmd(cmd, 2, &s1pid00, 4)) {
-		return -1;
-	}
-
-	return 0;
-}
-
-int get_engine_load(void)
+static inline
+int get_engine_load(obd_info_t *obd_info)
 {
 	// Request Service 1 PID 04: Engine load (01 04)
 	// 68 6A F1 01 04 C8
@@ -166,16 +102,17 @@ int get_engine_load(void)
 	unsigned char cmd[2] = {0x01, 0x04};
 	unsigned char result[1];
 	if (!send_cmd(cmd, 2, result, 1)) {
-		load = 0;
+		obd_info->load = 0;
 		return -1;
 	}
 
-	load = result[0] * 100 / 255; // Engine load is A * 100 / 255, in percent
+	obd_info->load = result[0] * 100 / 255; // Engine load is A * 100 / 255, in percent
 
 	return 0;
 }
 
-int get_engine_coolant_temp(void)
+static inline
+int get_engine_coolant_temp(obd_info_t *obd_info)
 {
 	// Request Service 1 PID 05: Engine coolant temperature (01 05)
 	// 68 6A F1 01 05 C9
@@ -183,16 +120,17 @@ int get_engine_coolant_temp(void)
 	unsigned char cmd[2] = {0x01, 0x05};
 	unsigned char result[1];
 	if (!send_cmd(cmd, 2, result, 1)) {
-		temperature = 0;
+		obd_info->temperature = 0;
 		return -1;
 	}
 
-	temperature = result[0] - 40; // Engine coolant temperature is A - 40, in Celsius
+	obd_info->temperature = result[0] - 40; // Engine coolant temperature is A - 40, in Celsius
 
 	return 0;
 }
 
-int get_engine_rpm(void)
+static inline
+int get_engine_rpm(obd_info_t *obd_info)
 {
 	// Request Service 1 PID 0C: Engine RPM (01 0C)
 	// 68 6A F1 01 0C D0
@@ -200,16 +138,17 @@ int get_engine_rpm(void)
 	unsigned char cmd[2] = {0x01, 0x0C};
 	unsigned char result[2];
 	if (!send_cmd(cmd, 2, result, 2)) {
-		rpm = 0;
+		obd_info->rpm = 0;
 		return -1;
 	}
 
-	rpm = (result[0] * 256 + result[1]) / 4; // RPM is ((A * 256) + B) / 4
+	obd_info->rpm = (result[0] * 256 + result[1]) / 4; // RPM is ((A * 256) + B) / 4
 
 	return 0;
 }
 
-int get_vehicle_speed(void)
+static inline
+int get_vehicle_speed(obd_info_t *obd_info)
 {
 	// Request Service 1 PID 0D: Vehicle speed (01 0D)
 	// 68 6A F1 01 0D D1
@@ -217,11 +156,89 @@ int get_vehicle_speed(void)
 	unsigned char cmd[2] = {0x01, 0x0D};
 	unsigned char result[1];
 	if (!send_cmd(cmd, 2, result, 1)) {
-		speed = 0;
+		obd_info->speed = 0;
 		return -1;
 	}
 
-	speed = result[0]; // Vehicle speed is A, in Km/h
+	obd_info->speed = result[0]; // Vehicle speed is A, in Km/h
+
+	return 0;
+}
+
+void obd_init(void)
+{
+	DDRD |= (1 << 1); // Set Pin PD1 as output
+	
+	PORTD |= (1 << 1); // Write 1 to PD1
+	
+	wait_avr(2610); // Wait 2610 ms for ECU to reset fully
+	
+	// Send a byte 33 hex at 5 baud
+	PORTD &= ~(1 << 1);
+	wait_avr(200);
+	PORTD |= (1 << 1);
+	wait_avr(400);
+	PORTD &= ~(1 << 1);
+	wait_avr(400);
+	PORTD |= (1 << 1);
+	wait_avr(400);
+	PORTD &= ~(1 << 1);
+	wait_avr(400);
+	PORTD |= (1 << 1);
+	wait_avr(200);
+	
+	// Initialize serial connection
+	// ~10400 baud --> UBRR = 47
+	// 8-bit character size
+	// No parity bit, 1 stop bit
+	USART_Init(47);
+	
+	// Wait for response: Byte 55 hex
+	unsigned char response = USART_Receive();
+	
+	// Receive two key bytes
+	// 08 08, 94 94 for ISO 9141
+	// 8F E9, 8F 6B, 8F 6D, 8F EF for KWP
+	unsigned char keyByte1 = USART_Receive();
+	unsigned char keyByte2 = USART_Receive();
+	
+	wait_avr(40);
+	
+	// Send ACK: Inverted key byte 2
+	unsigned char ack1 = ~keyByte2;
+	USART_Transmit(ack1);
+	
+	wait_avr(40);
+	
+	// Receive ACK from vehicle: Inverted address 33
+	unsigned char ack2 = USART_Receive();
+	ack2 = USART_Receive();
+	
+	clr_lcd();
+}
+
+int get_service1_supported_pids(obd_info_t *obd_info)
+{
+	// Send Service 1 PID 00 request message (01 00)
+	// 68 6A F1 01 00 C4
+
+	unsigned char cmd[2] = {0x01, 0x00};
+	if (!send_cmd(cmd, 2, obd_info->s1pid00, 4)) {
+		return -1;
+	}
+
+	return 0;
+}
+
+int get_obd_data(obd_info_t *obd_info) {
+	wait_avr(65);
+	get_engine_load(obd_info);
+	wait_avr(65);
+	get_engine_coolant_temp(obd_info);
+	wait_avr(65);
+	get_engine_rpm(obd_info);
+	wait_avr(65);
+	get_vehicle_speed(obd_info);
 
 	return 0;
 }

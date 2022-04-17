@@ -32,6 +32,8 @@ unsigned char mode;
 unsigned char page;
 volatile unsigned char timer_flag;
 
+obd_info_t obd_info;
+
 void timer_setup(void); // Setup for timer interrupt
 void update_lcd(void);
 unsigned char get_key(void);
@@ -55,16 +57,16 @@ ISR(TIMER1_COMPA_vect) {
 void update_lcd(void) {
 	if (mode == 1) { // Show first 32 supported Service 1 PIDs 
 		sprintf(buf0, "%02X %02X %02X %02X",
-				(unsigned int)(s1pid00[0] & 0xFF), (unsigned int)(s1pid00[1] & 0xFF),
-				(unsigned int)(s1pid00[2] & 0xFF), (unsigned int)(s1pid00[3] & 0xFF));
+				(unsigned int)(obd_info.s1pid00[0] & 0xFF), (unsigned int)(obd_info.s1pid00[1] & 0xFF),
+				(unsigned int)(obd_info.s1pid00[2] & 0xFF), (unsigned int)(obd_info.s1pid00[3] & 0xFF));
 	}
 	else if (page == 0) { // Show first page: RPM and speed
-		sprintf(buf0, "RPM: %i", rpm);
-		sprintf(buf1, "KM/H: %i", speed);
+		sprintf(buf0, "RPM: %i", obd_info.rpm);
+		sprintf(buf1, "KM/H: %i", obd_info.speed);
 	}
 	else { // Show second page: Engine load and engine coolant temperature
-		sprintf(buf0, "Load: %i", load);
-		sprintf(buf1, "Temp: %i", temperature);
+		sprintf(buf0, "Load: %i", obd_info.load);
+		sprintf(buf1, "Temp: %i", obd_info.temperature);
 	}
 	
 	clr_lcd();
@@ -124,22 +126,12 @@ int main (void)
 	page = 0; // Show RPM and speed / engine load and engine coolant temperature
 	
 	// OBDII Initialized
-	get_service1_supported_pids();
+	get_service1_supported_pids(&obd_info);
 	
 	sei(); // Enable interrupts
 	
 	while (1) {
-		wait_avr(65);
-		get_engine_load();
-
-		wait_avr(65);
-		get_engine_coolant_temp();
-
-		wait_avr(65);
-		get_engine_rpm()
-
-		wait_avr(65);
-		get_vehicle_speed();
+		get_obd_data(&obd_info);
 		
 		keyPressed = get_key();
 		if (keyPressed == 1) {
