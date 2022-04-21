@@ -7,5 +7,5 @@ typedef struct obd_info {
 } obd_info_t;
 
 void obd_init(void); // OBDII ISO 9141-2 initialization sequence
-int get_service1_supported_pids(void);
+int get_service1_supported_pids(obd_info_t *obd_info);
 int get_obd_data(obd_info_t *obd_info);
